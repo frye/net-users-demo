@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using NetUsersApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,12 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+// Add global exception handling middleware
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+
+// Add rate limiting middleware
+app.UseMiddleware<RateLimitingMiddleware>();
 
 app.UseRouting();
 

@@ -12,9 +12,9 @@ public class UsersController : ControllerBase
     // Sample user data
     private static List<UserProfile> _users = new()
     {
-        new UserProfile { Id = "1", FullName = "John Doe", Emoji = "😀" },
-        new UserProfile { Id = "2", FullName = "Jane Smith", Emoji = "🚀" },
-        new UserProfile { Id = "3", FullName = "Robert Johnson", Emoji = "🎸" }
+        new UserProfile { Id = "1", FullName = "John Doe", Email = "john.doe@example.com", Emoji = "😀" },
+        new UserProfile { Id = "2", FullName = "Jane Smith", Email = "jane.smith@example.com", Emoji = "🚀" },
+        new UserProfile { Id = "3", FullName = "Robert Johnson", Email = "robert.johnson@example.com", Emoji = "🎸" }
     };
 
     public UsersController(ILogger<UsersController> logger)
@@ -45,7 +45,13 @@ public class UsersController : ControllerBase
         
         if (user == null)
         {
-            return NotFound(new { error = "User not found" });
+            var error = new ApiError
+            {
+                ErrorCode = "USER_NOT_FOUND",
+                Message = $"User with ID '{id}' was not found",
+                Path = HttpContext.Request.Path
+            };
+            return NotFound(error);
         }
         
         return Ok(user);
@@ -59,9 +65,35 @@ public class UsersController : ControllerBase
     [HttpPost]
     public ActionResult<UserProfile> CreateUser([FromBody] UserProfile newUser)
     {
-        if (newUser == null)
+        if (!ModelState.IsValid)
         {
-            return BadRequest(new { error = "Invalid user data" });
+            var validationErrors = ModelState
+                .Where(x => x.Value?.Errors.Count > 0)
+                .ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+            var error = new ApiError
+            {
+                ErrorCode = "VALIDATION_ERROR",
+                Message = "One or more validation errors occurred",
+                Path = HttpContext.Request.Path,
+                Details = validationErrors
+            };
+            return BadRequest(error);
+        }
+
+        // Check for duplicate ID
+        if (_users.Any(u => u.Id == newUser.Id))
+        {
+            var error = new ApiError
+            {
+                ErrorCode = "DUPLICATE_ID",
+                Message = $"User with ID '{newUser.Id}' already exists",
+                Path = HttpContext.Request.Path
+            };
+            return BadRequest(error);
         }
 
         // For simplicity, we're just appending to the list
@@ -80,16 +112,36 @@ public class UsersController : ControllerBase
     [HttpPut("{id}")]
     public ActionResult<UserProfile> UpdateUser(string id, [FromBody] UserProfile updatedUser)
     {
-        if (updatedUser == null)
+        if (!ModelState.IsValid)
         {
-            return BadRequest(new { error = "Invalid user data" });
+            var validationErrors = ModelState
+                .Where(x => x.Value?.Errors.Count > 0)
+                .ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+            var error = new ApiError
+            {
+                ErrorCode = "VALIDATION_ERROR",
+                Message = "One or more validation errors occurred",
+                Path = HttpContext.Request.Path,
+                Details = validationErrors
+            };
+            return BadRequest(error);
         }
 
         var index = _users.FindIndex(u => u.Id == id);
         
         if (index == -1)
         {
-            return NotFound(new { error = "User not found" });
+            var error = new ApiError
+            {
+                ErrorCode = "USER_NOT_FOUND",
+                Message = $"User with ID '{id}' was not found",
+                Path = HttpContext.Request.Path
+            };
+            return NotFound(error);
         }
         
         // Ensure ID doesn't change
