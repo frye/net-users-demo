@@ -148,9 +148,8 @@ git status
 
 # Stage specific files
 git add net-users-api/Models/ApiError.cs
-git add net-users-api/Controllers/UsersController.cs
 
-# Or stage all changes
+# Or stage all changes - preferred for this section
 git add .
 
 # Commit with a descriptive message
@@ -229,9 +228,6 @@ GitHub Copilot can review your pull request and provide feedback:
 ```bash
 # View PR and request review
 gh pr view --web
-
-# Or request review via command
-gh pr comment --body "@copilot review"
 ```
 
 **Option C: Using Copilot Chat in VS Code**

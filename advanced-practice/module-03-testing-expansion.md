@@ -4,6 +4,65 @@
 
 ---
 
+## 🚀 Getting Started: Create a GitHub Issue
+
+Before starting the exercises, create a tracking issue using GitHub Copilot:
+
+### Step 1: Open GitHub Issue Creation
+1. Navigate to your repository on github.com
+2. Go to the **Issues** tab
+3. Click **New Issue**
+
+### Step 2: Use Copilot to Generate Issue
+1. Below the description field, click the **Write with Copilot** link
+2. Use the contents of [`module-03-issue-prompt.md`](module-03-issue-prompt.md) as your prompt
+3. Copilot will generate a complete issue description with:
+   - Overview of testing expansion goals
+   - Detailed task checklist (45+ items)
+   - Instructions for Copilot to maintain the task list
+   - Acceptance criteria and resources
+
+### Step 3: Create and Track
+1. Give the issue a title: **"Module 3: Testing Expansion"**
+2. Add labels: `enhancement`, `testing`, `copilot-practice`
+3. Create the issue
+
+### Step 4: Assign Work to Copilot Coding Agent
+1. In the created issue on GitHub.com, locate the **Assignees** section in the right sidebar
+2. Click **Assign to Copilot** (or search for "copilot" in assignees)
+3. This assigns the autonomous coding agent to work on the issue
+4. Copilot will begin analyzing the issue and creating an implementation plan
+
+### Step 5: Monitor the Coding Agent Session
+**Track Progress:**
+- View the newly created Pull request that is in **WIP** status
+- Scroll down to line that reads **Copilot started work on behalf of @your-username**
+- Click the View Session button
+- Monitor real-time updates as Copilot:
+  - Analyzes the codebase
+  - Creates a work plan
+  - Implements tests
+  - Runs test suites
+  - Updates task checkboxes
+  - Creates commits
+
+**Review Work:**
+- Check the **Files Changed** section to see what Copilot is modifying
+- Review the **Commit History** for the issue branch
+- Copilot will create a Pull Request when ready
+
+**Interact with Agent:**
+- Add comments to the issue to provide guidance or corrections
+- Use @copilot mentions to ask questions or request changes
+- Approve or request changes on the PR when Copilot completes work
+
+**Tips:**
+- The agent works autonomously but you can pause/resume as needed
+- Task list updates happen automatically as Copilot completes work
+- You can take over manually at any time by checking out the branch
+
+---
+
 ### Exercise 3.1: Comprehensive Unit Test Suite
 
 **Goal**: Achieve high unit test coverage for controllers and models
