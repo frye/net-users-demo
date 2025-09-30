@@ -39,3 +39,6 @@ app.MapControllers();
 
 Console.WriteLine("Starting server on :8080");
 app.Run();
+
+// Make Program class accessible for integration testing
+public partial class Program { }
