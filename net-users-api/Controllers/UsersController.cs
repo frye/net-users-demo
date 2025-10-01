@@ -107,16 +107,16 @@ public class UsersController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult DeleteUser(string id)
     {
+        _logger.LogInformation("DELETE /api/v1/users endpoint called");
+        
         var user = _users.FirstOrDefault(u => u.Id == id);
         
         if (user == null)
         {
-            _logger.LogInformation("DELETE /api/v1/users endpoint called - user not found");
             return NotFound(new { error = "User not found" });
         }
         
         _users.Remove(user);
-        _logger.LogInformation("DELETE /api/v1/users endpoint called - user deleted successfully");
         
         return NoContent();
     }
