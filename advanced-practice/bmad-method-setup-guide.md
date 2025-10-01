@@ -347,7 +347,7 @@ BMAD Method works alongside GitHub Copilot and other AI tools:
 3. **Example Workflow:**
    ```
    # In Copilot Chat
-   @workspace Using the requirements in #file:docs/prd.md and 
+   #codebase Using the requirements in #file:docs/prd.md and 
    architecture in #file:docs/architecture.md, implement the 
    first user story for avatar management.
    ```
