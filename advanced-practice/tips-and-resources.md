@@ -60,6 +60,13 @@
 - [Video Overview](https://www.youtube.com/watch?v=a9eR1xsfvHg)
 - [Spec-Kit Issues & Support](https://github.com/github/spec-kit/issues)
 
+### BMAD Method Resources
+- **[BMAD Method Setup Guide](bmad-method-setup-guide.md)** - Lab-style guide to setting up and using BMAD Method
+- [BMAD-METHOD GitHub Repository](https://github.com/bmad-code-org/BMAD-METHOD)
+- [BMAD Method Tutorial Video](https://www.youtube.com/watch?v=LorEJPrALcg)
+- [Context Engineering Article](https://python.plainenglish.io/from-specifications-to-context-engineering-exploring-the-bmad-method-for-systematic-ai-development-4346d4da2b18)
+- [BMAD Method Forum Discussion](https://forum.cursor.com/t/bmad-method-v2-in-an-evolution-imo-the-power-of-custom-agents-smaller-docs-and-checklists/87218)
+
 ### Architecture & Patterns
 - [Microsoft Architecture Guides](https://learn.microsoft.com/en-us/azure/architecture/)
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
