@@ -87,8 +87,11 @@ public class UsersControllerTests
     [Fact]
     public void CreateUser_NullUser_ReturnsBadRequest()
     {
+        // Arrange
+        UserProfile? nullUser = null;
+
         // Act
-        var result = _controller.CreateUser(null!);
+        var result = _controller.CreateUser(nullUser!);
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
@@ -142,9 +145,10 @@ public class UsersControllerTests
     {
         // Arrange
         var userId = "1";
+        UserProfile? nullUser = null;
 
         // Act
-        var result = _controller.UpdateUser(userId, null!);
+        var result = _controller.UpdateUser(userId, nullUser!);
 
         // Assert
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
