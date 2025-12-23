@@ -100,15 +100,22 @@ public class UsersController : ControllerBase
     }
 
     /// <summary>
-    /// Delete a user by ID TODO
+    /// Delete a user by ID
     /// </summary>
     /// <param name="id">User ID</param>
     /// <returns>No content or 404 if not found</returns>
     [HttpDelete("{id}")]
     public IActionResult DeleteUser(string id)
     {
-        // Implement delete functionality here using Copilot Ask or Edit mode
-        throw new NotImplementedException("DeleteUser functionality not yet implemented");
+        var user = _users.FirstOrDefault(u => u.Id == id);
+        
+        if (user == null)
+        {
+            return NotFound(new { error = "User not found" });
+        }
+        
+        _users.Remove(user);
+        return NoContent();
     }
 
     /// <summary>
