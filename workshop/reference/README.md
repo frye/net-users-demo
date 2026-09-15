@@ -40,6 +40,9 @@ Check the command's exit status and read the full log. The `*.log` file is ignor
 by Git; do not publish private machine paths from logs. A facilitator can retain
 sanitized counts and the input/output IDs with the workshop record. Normal
 validation retains TRX and JSON evidence under ignored `TestResults/workshop/`.
+The reference verifier also copies baseline/completed TRX and JSON results to
+ignored `TestResults/reference/` before removing its temporary clone; CI retains
+these with the other test artifacts. Source files remain unchanged.
 
 ## Recovery without overwriting work
 

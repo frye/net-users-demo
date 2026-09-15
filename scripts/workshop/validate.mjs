@@ -46,6 +46,7 @@ try {
   ];
   const count = verifyResults(results, required);
   if (revision !== git('rev-parse', 'HEAD')) throw new Error('HEAD changed during validation; rerun at a stable checkpoint.');
+  if (!dirty && git('status', '--porcelain')) throw new Error('Clean checkout changed during validation; rerun at a stable checkpoint.');
   const summary = {
     mode, revision, dirty, command: ['dotnet', ...args], passed: count,
     required, results, recordedAt: new Date().toISOString(),

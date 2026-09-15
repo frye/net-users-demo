@@ -1,6 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -20,10 +20,15 @@ function run(command, args, cwd, capture = false) {
 }
 
 let temporary;
+let checkout;
+let evidenceDirectory;
 try {
   run('git', ['cat-file', '-e', `${revision}^{commit}`], source);
+  const evidenceRoot = join(source, 'TestResults', 'reference');
+  mkdirSync(evidenceRoot, { recursive: true });
+  evidenceDirectory = mkdtempSync(join(evidenceRoot, `${revision.slice(0, 12)}-`));
   temporary = mkdtempSync(join(tmpdir(), 'net-users-reference-'));
-  const checkout = join(temporary, 'checkout');
+  checkout = join(temporary, 'checkout');
   run('git', ['clone', '--quiet', '--no-hardlinks', '--no-checkout', source, checkout], source);
   run('git', ['checkout', '--quiet', '--detach', revision], checkout);
   const controller = readFileSync(join(checkout, 'net-users-api/Controllers/UsersController.cs'), 'utf8');
@@ -42,11 +47,20 @@ try {
   const solutionTree = run('git', ['write-tree'], checkout, true);
   run('node', ['scripts/workshop/validate.mjs', 'complete'], checkout);
   run('node', ['scripts/workshop/validate.mjs', 'complete'], checkout);
-  console.log(JSON.stringify({ starterCommit: revision, patchSha256, solutionTree, baseline: 'passed', completedSolutionRuns: 2 }, null, 2));
-  console.log('Verified in a disposable clone. No solution branch, tag, or PR was created; original checkout unchanged.');
+  const summary = { starterCommit: revision, patchSha256, solutionTree, baseline: 'passed', completedSolutionRuns: 2 };
+  writeFileSync(join(evidenceDirectory, 'reference.json'), `${JSON.stringify(summary, null, 2)}\n`);
+  console.log(JSON.stringify(summary, null, 2));
+  console.log('Verified in a disposable clone. No solution branch, tag, or PR was created; original source unchanged.');
 } catch (error) {
   console.error(`REFERENCE VERIFICATION FAILED: ${error.message}`);
   process.exitCode = 1;
 } finally {
-  if (temporary) rmSync(temporary, { recursive: true, force: true });
+  try {
+    if (checkout && existsSync(join(checkout, 'TestResults'))) {
+      cpSync(join(checkout, 'TestResults'), join(evidenceDirectory, 'tests'), { recursive: true });
+      console.log(`Retained reference test evidence: ${evidenceDirectory}`);
+    }
+  } finally {
+    if (temporary) rmSync(temporary, { recursive: true, force: true });
+  }
 }
