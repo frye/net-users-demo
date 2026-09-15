@@ -4,6 +4,11 @@
 
 Follow these tasks to practice using GitHub Copilot effectively within your ASP.NET Core REST API project.
 
+For the current standalone CLI and cross-client workflow, start with the
+[Copilot Across Platforms workshop](docs/workshops/copilot-across-platforms/guide.md).
+The exercises below are preserved as historical practice material; their older
+CLI commands are not prerequisites for the workshop.
+
 ---
 
 ## ✅ Task 1: Add Three More Sample Users (Inline Code Completion)

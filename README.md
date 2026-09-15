@@ -2,6 +2,23 @@
 
 A .NET 9 REST API demonstration project that mirrors the functionality of the [frye/go-users-demo](https://github.com/frye/go-users-demo) repository. This project is designed for practicing GitHub Copilot features and Test-Driven Development with ASP.NET Core.
 
+## Copilot Across Platforms workshop
+
+Start with the **[participant guide](docs/workshops/copilot-across-platforms/guide.md)**.
+It covers one DELETE exercise across VS Code, the standalone Copilot CLI, the
+GitHub Copilot app, cloud agent/web, and GitHub Mobile in a fixed 60-minute session.
+The [static tabbed guide](docs/workshops/copilot-across-platforms/index.html) can be
+opened locally; all content is also available without JavaScript and in print.
+`https://frye.github.io/net-users-demo/` is the Pages deployment target, not a
+claim that publication has completed.
+
+The starter deliberately keeps DELETE unimplemented. Baseline tests cover existing
+routes; a passing baseline is **not** a completed exercise. See
+[reference verification and recovery](workshop/reference/README.md) for isolated
+facilitator checks. No optional MCP server, organizational repository copy, or
+account switch is required. Confirm actual account permissions before any cloud
+task or push; read-only, local, pairing, and observation paths are included.
+
 ## Project Structure
 
 ```
@@ -19,6 +36,8 @@ net-users-demo/
 │   ├── README.md               # Project-specific documentation
 │   ├── Copilot_Practice_Instructions.md
 │   └── Copilot_TDD_Practice_Instructions.md
+├── net-users-api.tests/        # Serialized baseline tests and HTTP test host
+├── docs/workshops/             # Generated tabbed guide and Markdown fallback
 └── net-users-demo.sln          # Solution file
 ```
 
@@ -55,9 +74,16 @@ Sample users:
 
 ### Prerequisites
 
-- .NET 9.0 SDK or newer
+- The exact .NET SDK from `global.json` (9.0.318; later major SDKs are not substitutes)
 - Visual Studio Code (recommended) with C# Dev Kit extension
 - GitHub Copilot (for practice exercises)
+- Node.js 22 or newer for workshop validation helpers/site preparation (not for reading the guide)
+
+SDK 9.0.318 includes runtime 9.0.20, selected from Microsoft's
+[official release metadata](https://builds.dotnet.microsoft.com/dotnet/release-metadata/9.0/releases.json)
+on September 15, 2026. .NET 9 is in maintenance through November 10, 2026;
+recheck [support and servicing](https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core)
+before a later event. Do not silently roll forward the workshop SDK.
 
 ### Installation
 
@@ -184,10 +210,33 @@ This .NET implementation mirrors the [frye/go-users-demo](https://github.com/fry
 dotnet build
 ```
 
-### Running tests (after generating them):
+### Running the prepared baseline:
 ```bash
-dotnet test
+dotnet test net-users-api.tests/net-users-api.tests.csproj
+node scripts/workshop/validate.mjs baseline
 ```
+
+After implementing the focused DELETE tests, use `node scripts/workshop/validate.mjs local`.
+After the HTTP regression/cloud follow-up, use `node scripts/workshop/validate.mjs complete`.
+The latter two deliberately fail on the starter if required tests are absent.
+Use the exact test names in `scripts/workshop/requirements.json`; do not remove or
+skip checks to make the command green. Test runs use fresh synthetic objects and
+global serialization because storage is static. This does not add production
+concurrency guarantees.
+
+### Rebuilding the public guide:
+```bash
+node scripts/build-workshop-guide.mjs
+node scripts/build-workshop-guide.mjs --check
+node scripts/test-workshop-guide.mjs
+```
+
+Edit the guide's structured source, not its generated HTML/Markdown. The Pages
+workflow validates pull requests with read-only contents access; only its
+default-branch deployment job receives Pages/OIDC permissions. The repository
+owner must approve publication and any required environment/workflow gates.
+The cloud setup workflow must be on the default branch before relying on it.
+Local checks do not prove that a cloud session has run successfully.
 
 ### Cleaning build artifacts:
 ```bash

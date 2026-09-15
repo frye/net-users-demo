@@ -430,6 +430,7 @@ Temporary Items
 .env
 .env.local
 .env.*.local
+_site/
 
 # User secrets
 secrets.json

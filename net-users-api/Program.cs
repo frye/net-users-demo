@@ -39,3 +39,6 @@ app.MapControllers();
 
 Console.WriteLine("Starting server on :8080");
 app.Run();
+
+// Makes the entry point available to WebApplicationFactory without starting a real listener.
+public partial class Program { }
