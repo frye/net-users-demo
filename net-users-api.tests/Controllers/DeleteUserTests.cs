@@ -58,7 +58,7 @@ public class DeleteUserTests : UserStoreTest
         var controller = new UsersController(logger);
 
         controller.DeleteUser("2");
-        controller.DeleteUser("missing");
+        controller.DeleteUser("missing\r\nforged");
 
         Assert.Collection(
             logger.Entries,
@@ -71,7 +71,7 @@ public class DeleteUserTests : UserStoreTest
             entry =>
             {
                 Assert.Equal(LogLevel.Information, entry.Level);
-                Assert.Equal("missing", entry.Properties["UserId"]);
+                Assert.Equal("missingforged", entry.Properties["UserId"]);
                 Assert.Equal("DELETE /api/v1/users/{UserId} endpoint called", entry.Properties["{OriginalFormat}"]);
             });
     }

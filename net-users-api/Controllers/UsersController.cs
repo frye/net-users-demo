@@ -107,7 +107,8 @@ public class UsersController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult DeleteUser(string id)
     {
-        _logger.LogInformation("DELETE /api/v1/users/{UserId} endpoint called", id);
+        var loggedUserId = id.Replace("\r", string.Empty).Replace("\n", string.Empty);
+        _logger.LogInformation("DELETE /api/v1/users/{UserId} endpoint called", loggedUserId);
 
         var user = _users.FirstOrDefault(u => u.Id == id);
 
