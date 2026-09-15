@@ -7,8 +7,8 @@ export const guideDirectory = fileURLToPath(new URL('../docs/workshops/copilot-a
 export const fields = [
   ['navigation', 'Navigate'],
   ['actions', 'Act'],
-  ['evidence', 'Expected evidence'],
-  ['checkpoint', 'Checkpoint'],
+  ['evidence', 'What to look for'],
+  ['recovery', 'If you get stuck (optional)'],
   ['limitations', 'Limitations'],
   ['fallback', 'Fallback'],
 ];
@@ -92,7 +92,8 @@ ${citations(panel.sources)}
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="${escape(meta.subtitle)}">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0d1117">
 <title>${escape(meta.title)} — DELETE workshop</title>
 <link rel="stylesheet" href="./guide.css">
 <script src="./guide.js" defer></script>
@@ -102,29 +103,30 @@ ${citations(panel.sources)}
 <header class="hero">
 <div class="hero-inner"><p class="eyebrow">A practical, 60-minute workshop</p>
 <h1>${escape(meta.title)}</h1><p class="subtitle">${escape(meta.subtitle)}</p>
-<div class="hero-links"><a href="${meta.repo}">Public sample repository</a><a href="./guide.md">All-client Markdown guide</a><a href="#templates">Task &amp; handoff templates</a></div>
+<div class="hero-links"><a href="${meta.repo}">Read-only sample repository</a><a href="./guide.md">All-client Markdown guide</a><a href="#templates">Prompts &amp; optional notes</a></div>
 <p class="hero-note">One task, not five implementations. Choose a client at each step or stay in the one you prefer.</p></div>
 </header>
 <div class="layout">
 <aside class="navigation"><nav aria-label="Workshop navigation">
 <p class="eyebrow">Your route</p>
-<a href="#start">Prework &amp; access gates</a>
-<a href="#exercise">The DELETE contract</a>
+<a href="#start">Set up your own copy</a>
+<a href="#exercise">The DELETE exercise</a>
+<a href="#private-upstream">Private upstream (optional)</a>
 <a href="#run-of-show">60-minute run of show</a>
-<a href="#checkpoints">C0–C4 checkpoints</a>
+<a href="#checkpoints">Optional recovery points</a>
 <ol>${steps.map(step => `<li><a href="#${step.id}" data-step="${step.id}">${escape(step.title)}</a></li>`).join('\n')}</ol>
-<a href="#templates">Copyable templates</a><a href="#recovery">Recovery &amp; evidence gates</a><a href="#sources">Public sources</a>
+<a href="#templates">Reusable prompts</a><a href="#recovery">If you get stuck</a><a href="#sources">Public sources</a>
 </nav><p class="navigation-tip">Client tabs: Left / Right, Home / End. Your chosen client carries across steps and reloads when browser storage is available.</p>
 <button type="button" id="print-guide" hidden>Print all clients</button></aside>
 <main id="main" tabindex="-1">
-<div class="notice"><strong>Know which gate you passed.</strong><p>${escape(meta.status)}</p><p>Documentation checked ${meta.verified}. Deployment target: <span class="breakable">${escape(meta.deployment)}</span></p></div>
+<div class="notice"><strong>Your copy. Your pace. No required submission.</strong><p>${escape(meta.status)}</p></div>
 <noscript><p class="notice">JavaScript is off. All 35 client panels and commands are visible below. Select command text manually to copy. Print also includes all clients.</p></noscript>
 ${overview.map(block).join('\n')}
-<div class="journey-heading"><p class="eyebrow">The seven-step journey</p><p>Each tab gives navigation, actions, evidence, a checkpoint, limitations and a fallback. Operation labels tell you where work actually runs.</p></div>
+<div class="journey-heading"><p class="eyebrow">The seven-step journey</p><p>Choose the instructions for your client and keep going. Recovery notes are optional help if something breaks—not gates between steps.</p></div>
 ${steps.map(stepHtml).join('\n')}
 <section class="overview-section" id="templates" aria-labelledby="templates-title">
-<h2 id="templates-title">Task and handoff templates</h2>
-<p>Replace every placeholder before use. Fill checkout paths locally only; redact them before sharing with cloud or in public. Copy buttons report failure honestly—manual selection always works.</p>
+<h2 id="templates-title">Reusable prompts and optional notes</h2>
+<p>Use the prompts in your own copy. The recovery note is optional; skip it if things are working. Replace placeholders only in the commands or notes you choose to use, and keep private paths local.</p>
 ${Object.values(templates).map(template => `<h3>${escape(template.title)}</h3><p><a href="./${template.file}">Download ${escape(template.file)}</a></p>${code(template.title, template.text)}`).join('\n')}
 </section>
 ${closing.map(block).join('\n')}
@@ -133,7 +135,7 @@ ${closing.map(block).join('\n')}
 <ul>${sources.map(source => `<li id="source-${source.id}"><a href="${escape(source.url)}">${escape(source.title)}</a> <span class="source-date">— checked ${source.verified}</span></li>`).join('\n')}</ul>
 </section>
 </main></div>
-<footer><p>${escape(meta.title)} · One task, one next writer, one evidence trail.</p><p>No login or external page assets. Print and Markdown include every client.</p></footer>
+<footer><p>${escape(meta.title)} · One task. Your own copy. No required submission.</p><p>No login or external page assets. Print and Markdown include every client.</p></footer>
 </body>
 </html>
 `;
@@ -151,7 +153,7 @@ ${meta.subtitle}
 
 ${meta.status}
 
-Documentation checked ${meta.verified}. Deployment target: ${meta.deployment}
+Public documentation checked ${meta.verified}; client availability still depends on your approved setup.
 
 All 35 client panels are included below. Choose one client throughout or follow the timed path. No Node or sign-in is needed to read this guide.
 
@@ -159,8 +161,8 @@ All 35 client panels are included below. Choose one client throughout or follow 
 
 ${overview.map(item => `- [${item.title}](#${item.id})`).join('\n')}
 ${steps.map((step, index) => `- [${index + 1}. ${step.title}](#${step.id})`).join('\n')}
-- [Task and handoff templates](#templates)
-- [Recovery and evidence gates](#recovery)
+- [Reusable prompts and optional notes](#templates)
+- [If you get stuck](#recovery)
 - [Official sources](#sources)
 
 ${overview.map(mdBlock).join('\n\n')}
@@ -172,9 +174,9 @@ ${steps.map((step, index) => `<a id="${step.id}"></a>\n\n## ${index + 1}. ${step
 
 <a id="templates"></a>
 
-## Task and handoff templates
+## Reusable prompts and optional notes
 
-Replace every placeholder before use. Keep checkout paths locally only; redact them before public/cloud sharing.
+Use these in your own copy. The recovery note is optional; skip it if things are working. Replace placeholders only in the commands or notes you choose to use. Keep private paths local.
 
 ${Object.values(templates).map(template => `### ${template.title}\n\n[Download ${template.file}](./${template.file})\n\n${mdCode(template.title, template.text)}`).join('\n')}
 

@@ -42,12 +42,18 @@ try {
   const patchPath = 'workshop/reference/delete.patch';
   const patchSha256 = createHash('sha256').update(readFileSync(join(checkout, patchPath))).digest('hex');
   run('git', ['apply', '--check', patchPath], checkout);
-  run('git', ['apply', patchPath], checkout);
+  const localPaths = [
+    'net-users-api/Controllers/UsersController.cs',
+    'net-users-api.tests/Controllers/DeleteUserTests.cs',
+  ];
+  run('git', ['apply', ...localPaths.map(path => `--include=${path}`), patchPath], checkout);
+  run('node', ['scripts/workshop/validate.mjs', 'local'], checkout);
+  run('git', ['apply', ...localPaths.map(path => `--exclude=${path}`), patchPath], checkout);
   run('git', ['add', '--', 'net-users-api/Controllers/UsersController.cs', 'net-users-api/net-users-api.http', 'net-users-api.tests'], checkout);
   const solutionTree = run('git', ['write-tree'], checkout, true);
   run('node', ['scripts/workshop/validate.mjs', 'complete'], checkout);
   run('node', ['scripts/workshop/validate.mjs', 'complete'], checkout);
-  const summary = { starterCommit: revision, patchSha256, solutionTree, baseline: 'passed', completedSolutionRuns: 2 };
+  const summary = { starterCommit: revision, patchSha256, solutionTree, baseline: 'passed', localRecovery: 'passed', completedSolutionRuns: 2 };
   writeFileSync(join(evidenceDirectory, 'reference.json'), `${JSON.stringify(summary, null, 2)}\n`);
   console.log(JSON.stringify(summary, null, 2));
   console.log('Verified in a disposable clone. No solution branch, tag, or PR was created; original source unchanged.');

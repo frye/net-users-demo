@@ -12,12 +12,20 @@ opened locally; all content is also available without JavaScript and in print.
 `https://frye.github.io/net-users-demo/` is the Pages deployment target, not a
 claim that publication has completed.
 
+The guide uses a GitHub-style dark theme. Checkpoints are **optional recovery
+points**, not handoff requirements: if things work, skip them and continue.
+Participants keep exercise work in their own local clone. The shared sample is
+read-only: no participant pushes, PRs, issues, or cloud tasks against it. A private,
+user-owned upstream is an optional, policy-approved choice—not a lab requirement.
+
 The starter deliberately keeps DELETE unimplemented. Baseline tests cover existing
 routes; a passing baseline is **not** a completed exercise. See
 [reference verification and recovery](workshop/reference/README.md) for isolated
 facilitator checks. No optional MCP server, organizational repository copy, or
 account switch is required. Confirm actual account permissions before any cloud
-task or push; read-only, local, pairing, and observation paths are included.
+task in an optional private upstream; local, pairing, and observation paths work
+without publishing anything. Maintainer publication of this guide is separate
+from participant exercise work.
 
 ## Project Structure
 
@@ -217,7 +225,7 @@ node scripts/workshop/validate.mjs baseline
 ```
 
 After implementing the focused DELETE tests, use `node scripts/workshop/validate.mjs local`.
-After the HTTP regression/cloud follow-up, use `node scripts/workshop/validate.mjs complete`.
+After the local (or optional private-cloud) HTTP follow-up, use `node scripts/workshop/validate.mjs complete`.
 The latter two deliberately fail on the starter if required tests are absent.
 Use the exact test names in `scripts/workshop/requirements.json`; do not remove or
 skip checks to make the command green. Test runs use fresh synthetic objects and

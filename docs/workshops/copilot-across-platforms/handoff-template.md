@@ -1,25 +1,14 @@
 <!-- Generated from content.mjs. Replace placeholders; redact private paths before public/cloud sharing. -->
-# Checkpoint and handoff record — fill locally
+# Optional recovery note
 
 ```text
-Checkpoint: <C0 | C1 | C2 | C3 | C4>
-Task: <same DELETE exercise and bounded remaining work>
-Repository URL: <approved-repository-URL>
-Private checkout/worktree path: <fill locally only; redact before sharing publicly or with cloud>
-Base branch: <base-branch>
-Working branch: <working-branch>
-HEAD: <full-immutable-SHA>
-State: <clean/dirty; local-only/pushed; published-SHA-or-not-pushed>
-Approved plan: <bounded-plan-text-or-link>
-Approval: <who-approved-what-and-when; publishing/usage-approval-separately>
-Completed criteria: <criteria-with-evidence>
-Remaining criteria: <criteria-not-yet-met>
-Exact commands and results: <commands, exit-codes, executed-test-counts, failures>
-Tested SHA and worktree state: <SHA; clean-or-described-uncommitted-diff>
-PR link and PR head: <URL-and-SHA-or-none>
-Session link: <URL-or-local-session-identifier-or-none>
-Previous writer stopped: <yes/no; how verified>
-Receiving worktree base verified: <path-locally-only, branch, HEAD; match/mismatch>
-Next writer/action: <one owner and one bounded action>
-Outcome: <completed | running | blocked | observation-only; do-not-infer-success>
+Skip this note if everything is working. It is not a handoff requirement.
+Where I got stuck: <step and problem>
+Work to keep: <my current branch and unfinished edits; keep private paths local>
+Last working version, if known: <local commit or prepared example>
+Useful result: <command and result, only if it helps>
+Where to resume: <plan | local DELETE | HTTP follow-up | review>
+Recovery choice, if needed: <C0/C1 starter | C2/C3 local example | C4 completed example>
+Next action: <continue here, ask for help, or open a separate recovery copy>
+A recovery label does not save, publish, or reset anything. Keep the original work.
 ```
