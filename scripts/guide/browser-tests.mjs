@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { access, mkdir, readFile, rm } from 'node:fs/promises';
+import { access, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { createServer } from 'node:http';
 import { join, resolve } from 'node:path';
@@ -7,7 +7,7 @@ import { pathToFileURL, fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
 import { guideDirectory } from '../build-workshop-guide.mjs';
-import { clients, steps } from '../../docs/workshops/copilot-across-platforms/content.mjs';
+import { clients, steps, templates } from '../../docs/workshops/copilot-across-platforms/content.mjs';
 
 // Standard-library CDP fallback: no npm install, personal browser profile, or external service.
 async function findBrowser() {
@@ -82,7 +82,7 @@ export async function browserTests() {
   const executable = await findBrowser();
   const profile = resolve(fileURLToPath(new URL('./', import.meta.url)), `.browser-profile-${process.pid}`);
   await mkdir(profile);
-  const allowed = new Set(['index.html', 'guide.css', 'guide.js', 'guide.md', 'task-template.md', 'handoff-template.md', 'cloud-followup-template.md']);
+  const allowed = new Set(['index.html', 'guide.css', 'guide.js', 'guide.md', ...Object.values(templates).map(template => template.file)]);
   const server = createServer(async (request, response) => {
     try {
       const pathname = new URL(request.url, 'http://localhost').pathname;
@@ -139,7 +139,29 @@ export async function browserTests() {
     const selected = id => `Array.from(document.querySelectorAll('[role="tab"][aria-selected="true"]')).every(t => t.dataset.client === '${id}')`;
     await go(`${origin}/`);
     await check(`${visible}.length === 7`, 'Seven active panels after enhancement');
-    await check(`getComputedStyle(document.body).backgroundColor === 'rgb(245, 247, 250)'`, 'Stylesheet loads at artifact root');
+    await check(`getComputedStyle(document.body).backgroundColor === 'rgb(13, 17, 23)'`, 'GitHub-style dark background at artifact root');
+    await check(`getComputedStyle(document.documentElement).colorScheme === 'dark'`, 'Native controls use dark color scheme');
+    const contrast = await evaluate(`(() => {
+      const luminance = color => {
+        const values = color.match(/[\\d.]+/g).slice(0, 3).map(Number).map(value => {
+          const channel = value / 255;
+          return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+        });
+        return values[0] * 0.2126 + values[1] * 0.7152 + values[2] * 0.0722;
+      };
+      return ['body', '.subtitle', '.hero-note', '.navigation a', '.notice', '.step-heading p',
+        '.step-number', '.mode', '.limitations', '.fallback', '.command-title', 'pre',
+        '.copy-button', '.source-date', '[role="tab"][aria-selected="true"]', '[role="tab"][aria-selected="false"]']
+        .map(selector => {
+          const element = document.querySelector(selector);
+          let parent = element;
+          while (parent && getComputedStyle(parent).backgroundColor === 'rgba(0, 0, 0, 0)') parent = parent.parentElement;
+          const foreground = luminance(getComputedStyle(element).color);
+          const background = luminance(getComputedStyle(parent || document.body).backgroundColor);
+          return { selector, ratio: (Math.max(foreground, background) + 0.05) / (Math.min(foreground, background) + 0.05) };
+        });
+    })()`);
+    for (const sample of contrast) assert(sample.ratio >= 4.5, `${sample.selector} text contrast ${sample.ratio.toFixed(2)} must be at least 4.5:1`);
     for (const step of steps) {
       for (const client of clients) {
         await evaluate(`document.getElementById('${step.id}-tab-${client.id}').click()`);
@@ -167,7 +189,7 @@ export async function browserTests() {
     await check(selected('mobile'), 'Deep-link reload preserves client');
     await go(`${origin}/net-users-demo/`);
     await check(selected('mobile'), 'Client persists without hash at repository base path');
-    await check(`getComputedStyle(document.body).backgroundColor === 'rgb(245, 247, 250)'`, 'Assets load at repository base path');
+    await check(`getComputedStyle(document.body).backgroundColor === 'rgb(13, 17, 23)'`, 'Dark assets load at repository base path');
     await go(`${origin}/net-users-demo/#implement-app`);
     await check(selected('app'), 'Explicit hash overrides stored client');
     await evaluate(`document.getElementById('implement-tab-cli').click(); history.back()`);
@@ -198,9 +220,25 @@ export async function browserTests() {
       await check(`document.documentElement.scrollWidth <= ${width}`, `No page overflow at ${width}px`);
       await check(`Array.from(document.querySelectorAll('[role="tablist"]')).every(t => t.clientWidth > 0 && t.scrollWidth >= t.clientWidth)`, 'Tab rows remain reachable');
     }
+    if (process.env.WORKSHOP_SCREENSHOTS) {
+      const directory = resolve(process.env.WORKSHOP_SCREENSHOTS);
+      await mkdir(directory, { recursive: true });
+      for (const [name, width, height, hash] of [
+        ['workshop-dark-recovery-desktop.png', 1440, 1100, 'checkpoints'],
+        ['workshop-dark-mobile.png', 390, 1000, 'delegate-cli'],
+      ]) {
+        await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 500 });
+        await go(`${origin}/#${hash}`);
+        await evaluate('new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))');
+        const screenshot = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
+        await writeFile(join(directory, name), Buffer.from(screenshot.data, 'base64'));
+      }
+    }
     await send('Emulation.setEmulatedMedia', { media: 'print' });
     await check(`${visible}.length === 35`, 'Print reveals all client panels');
     await check(`Array.from(document.querySelectorAll('[role="tablist"],[data-copy]')).every(e => getComputedStyle(e).display === 'none')`, 'Print hides interactive controls');
+    await check(`getComputedStyle(document.body).backgroundColor === 'rgb(255, 255, 255)' && getComputedStyle(document.querySelector('pre')).color === 'rgb(0, 0, 0)'`, 'Print uses readable black text on light surfaces');
+    await check(`getComputedStyle(document.querySelector('.step')).backgroundColor === 'rgb(255, 255, 255)'`, 'Print does not retain dark panel backgrounds');
     await send('Emulation.setEmulatedMedia', { media: '' });
     await check(`${visible}.length === 7`, 'Screen selection restored after print');
     await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
@@ -213,7 +251,7 @@ export async function browserTests() {
     const fileUrl = pathToFileURL(join(guideDirectory, 'index.html')).href;
     await go(`${fileUrl}#monitor-mobile`);
     await check(`${selected('mobile')} && ${visible}.length === 7`, 'Local file tabs and deep-link');
-    await check(`getComputedStyle(document.body).backgroundColor === 'rgb(245, 247, 250)'`, 'Local file stylesheet');
+    await check(`getComputedStyle(document.body).backgroundColor === 'rgb(13, 17, 23)'`, 'Local file dark stylesheet');
     await send('Emulation.setScriptExecutionDisabled', { value: true });
     await go(`${origin}/net-users-demo/`, false);
     await check(`${visible}.length === 35`, 'No-JS reveals all 35 panels');
@@ -222,7 +260,7 @@ export async function browserTests() {
     await check(`${visible}.length === 35`, 'No-JS local file reveals all content');
     assert.equal(connection.exceptions.length, 0, 'No uncaught browser JavaScript errors');
     assert(connection.requests.every(url => url.startsWith(origin) || url.startsWith('file:') || url === 'about:blank'), 'No external page asset/network requests');
-    console.log(`PASS browser (${version.product}): root + /net-users-demo/ + file:, 35 tab combinations, keyboard/focus, history/hash/reload/storage denial, clipboard resolved/rejected/missing API, 320–1440px layout, print, no-JS, reduced motion, forced colors and no external page requests.`);
+    console.log(`PASS browser (${version.product}): dark theme with 4.5:1+ text contrast, root/base/file loading, 35 tabs, keyboard/focus, history/storage, clipboard, 320–1440px, light print, no-JS, reduced motion, forced colors, no external requests.`);
     console.log('Browser scope is the static guide only; clipboard API outcomes were controlled in-browser. No Copilot client or live cloud task was rehearsed.');
   } finally {
     if (browser && browser.exitCode === null) {
