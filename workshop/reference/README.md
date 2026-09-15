@@ -4,6 +4,11 @@ The normal API is the **starter**, not a completed DELETE solution. The answer i
 kept in `delete.patch`, outside compiled source. Do not apply it to a participant's
 working tree or use it instead of the local TDD exercise.
 
+The sanitized [verification record](verification.json) names an actually executed
+starter commit: 21 baseline tests and 28 completed-solution tests on each of two
+runs, with no failures or skips. It is historical evidence for that exact snapshot,
+not a claim that later commits or client/cloud sessions have been rehearsed.
+
 ## Reproducible verification
 
 Use the exact SDK in `global.json`, Git, and Node.js 22 or newer. From a committed

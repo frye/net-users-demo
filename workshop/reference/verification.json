@@ -1,0 +1,18 @@
+{
+  "recordedDateUtc": "2026-09-15",
+  "scope": "Local API/reference verification only; not a live Copilot-client or cloud/Mobile rehearsal",
+  "starterCommit": "77513c967489e9296c4ceecf690b60e4bd02044d",
+  "sdk": "9.0.318",
+  "runtime": "9.0.20",
+  "platform": "macOS arm64",
+  "command": "node scripts/workshop/verify-reference.mjs 77513c967489e9296c4ceecf690b60e4bd02044d",
+  "patchSha256": "335840baf55b676210349d9eb0b8dfb86f29d6774ab8a27afad21843f1189b42",
+  "solutionTree": "4d7daf1b7df12ba2e0e681401a06d2376d31802e",
+  "build": { "configuration": "Release", "errors": 0, "warnings": 0 },
+  "baseline": { "passed": 21, "failed": 0, "skipped": 0 },
+  "completedSolution": [
+    { "run": 1, "passed": 28, "failed": 0, "skipped": 0 },
+    { "run": 2, "passed": 28, "failed": 0, "skipped": 0 }
+  ],
+  "interpretation": "The starter keeps the DELETE stub. The solution tree is derived by applying the committed patch in a disposable clone; it is not a published branch or tag. Later commits require fresh verification."
+}
