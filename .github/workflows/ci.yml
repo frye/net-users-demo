@@ -1,0 +1,41 @@
+name: Workshop CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Restore and build
+        run: |
+          dotnet restore net-users-demo.sln
+          dotnet build net-users-demo.sln --configuration Release --no-restore
+      - name: Validate guide and evidence helper
+        run: |
+          node scripts/build-workshop-guide.mjs --check
+          node scripts/test-workshop-guide.mjs
+          node --test scripts/workshop/results.test.mjs
+      - name: Baseline and fail-closed exercise or isolated reference
+        run: node scripts/workshop/ci.mjs
+      - name: Retain test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workshop-test-results
+          path: TestResults/
+          if-no-files-found: warn

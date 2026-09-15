@@ -1,0 +1,35 @@
+{
+  "baselineFilter": "Workshop=Baseline",
+  "localFilter": "Workshop=Baseline|Workshop=Delete",
+  "baseline": [
+    "NetUsersApi.Tests.Controllers.UsersControllerTests.GetUsersReturnsAllProfiles",
+    "NetUsersApi.Tests.Controllers.UsersControllerTests.GetUserReturnsMatchingProfile",
+    "NetUsersApi.Tests.Controllers.UsersControllerTests.GetMissingUserReturnsExistingError",
+    "NetUsersApi.Tests.Controllers.UsersControllerTests.CreateUserReturnsCreatedLocationAndAddsProfile",
+    "NetUsersApi.Tests.Controllers.UsersControllerTests.CreateNullUserReturnsBadRequest",
+    "NetUsersApi.Tests.Controllers.UsersControllerTests.UpdateUserKeepsRouteId",
+    "NetUsersApi.Tests.Controllers.UsersControllerTests.UpdateMissingUserReturnsExistingError",
+    "NetUsersApi.Tests.Controllers.UsersControllerTests.UpdateNullUserReturnsBadRequest",
+    "NetUsersApi.Tests.Controllers.UsersControllerTests.HomeReturnsProfilesForView",
+    "NetUsersApi.Tests.Http.ExistingRoutesTests.ListReturnsAllUsersAsJson",
+    "NetUsersApi.Tests.Http.ExistingRoutesTests.GetReturnsUser",
+    "NetUsersApi.Tests.Http.ExistingRoutesTests.GetMissingReturnsExistingJsonError",
+    "NetUsersApi.Tests.Http.ExistingRoutesTests.PostCreatesUserAtResolvableLocation",
+    "NetUsersApi.Tests.Http.ExistingRoutesTests.PutUpdatesUserAndKeepsRouteId",
+    "NetUsersApi.Tests.Http.ExistingRoutesTests.PutMissingReturnsExistingJsonError",
+    "NetUsersApi.Tests.Http.ExistingRoutesTests.InvalidBodyReturnsBadRequest",
+    "NetUsersApi.Tests.Http.ExistingRoutesTests.HomeRendersCurrentUsers",
+    "NetUsersApi.Tests.Infrastructure.UserStoreTests.FreshFixturesDoNotReuseMutatedProfileObjects",
+    "NetUsersApi.Tests.Infrastructure.UserStoreTests.ScopeRestoresValuesWithoutRetainingMutableReferences"
+  ],
+  "local": [
+    "NetUsersApi.Tests.Controllers.DeleteUserTests.ExistingIdReturnsNoContentAndRemovesUser",
+    "NetUsersApi.Tests.Controllers.DeleteUserTests.MissingIdReturnsExistingError",
+    "NetUsersApi.Tests.Controllers.DeleteUserTests.RepeatedDeleteReturnsExistingError",
+    "NetUsersApi.Tests.Controllers.DeleteUserTests.OtherUsersRemainUnchanged",
+    "NetUsersApi.Tests.Controllers.DeleteUserTests.LogsStructuredRequestWithUserId"
+  ],
+  "cloud": [
+    "NetUsersApi.Tests.Http.DeleteUserHttpTests.RepeatedDeleteReturnsNotFoundWithoutChangingOtherUsers"
+  ]
+}

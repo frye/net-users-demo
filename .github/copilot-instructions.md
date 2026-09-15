@@ -9,7 +9,7 @@ This is a .NET 9 REST API demonstration project designed for practicing GitHub C
 ## Technology Stack
 
 ### Core Technologies
-- **.NET 9.0** - Latest .NET framework
+- **.NET 9.0** - Workshop target; exact SDK pinned in `global.json`
 - **ASP.NET Core** - Web framework for building the REST API
 - **C# 12** - Primary programming language with nullable reference types enabled
 - **Kestrel** - Web server (configured to run on port 8080)
@@ -24,7 +24,27 @@ This is a .NET 9 REST API demonstration project designed for practicing GitHub C
 - **In-memory Data Storage** - Static list-based data persistence (no database)
 
 ### Testing Framework
-- **xUnit** - Unit testing framework (not yet implemented, but planned for future test projects)
+- **xUnit** - Prepared baseline in `net-users-api.tests/`, with an HTTP test host
+
+### Copilot Across Platforms workshop
+
+- Start at `docs/workshops/copilot-across-platforms/guide.md`; use the standalone
+  `copilot` CLI, not historical `gh copilot suggest` examples.
+- Keep DELETE unfinished on the prepared starter. Implement it only when explicitly
+  working on the exercise; do not copy the facilitator reference as preparation.
+- Use `dotnet restore net-users-demo.sln`, `dotnet build net-users-demo.sln`,
+  and `node scripts/workshop/validate.mjs baseline`.
+- For exercise changes, add focused tests with the names in
+  `scripts/workshop/requirements.json`, tagged `Workshop=Delete`; validate with
+  `node scripts/workshop/validate.mjs local`. The cloud follow-up adds the HTTP
+  regression tagged `Workshop=DeleteHttp`, then runs `complete`.
+- Missing or skipped feature tests are not success. Keep existing baseline tests.
+- Derive store-sharing tests from `UserStoreTest`; use `UsersApiFactory` for HTTP.
+  Assembly-wide test serialization and fresh profile snapshots are intentional.
+  Do not add production reset hooks or redesign storage for this exercise.
+- No `.vscode/mcp.json` servers, MCP credentials, skills, or plugins are required.
+- Stop the previous writer and verify branch/SHA before switching clients. Cloud
+  needs an authorized pushed checkpoint. Continue the existing task/PR.
 
 ## Project Structure
 
@@ -49,7 +69,7 @@ net-users-demo/                          # Solution root
 │   ├── net-users-api.csproj             # Project file
 │   └── README.md                        # Project-specific documentation
 ├── net-users-demo.sln                   # Solution file
-└── [Future: net-users-api.tests/]       # Test project location (to be created)
+└── net-users-api.tests/                # Baseline tests and HTTP test host
 ```
 
 ### Important Structural Guidelines
@@ -147,14 +167,14 @@ The API includes three pre-populated users:
 4. **Logging**: Use injected `ILogger<T>` for logging, not `Console.WriteLine` (except in `Program.cs`)
 5. **Validation**: Add data validation attributes from `System.ComponentModel.DataAnnotations`
 
-### When Creating Tests (Future)
-1. **Create test project**: Use `dotnet new xunit -o net-users-api.tests` at solution level
-2. **Reference main project**: Add project reference to `net-users-api`
+### When Adding Tests
+1. **Use the existing test project**: `net-users-api.tests` at solution level
+2. **Reference main project**: The project reference to `net-users-api` is already configured
 3. **Test structure**: Mirror the structure of the main project (Controllers/, Models/, etc.)
 4. **Naming convention**: Test classes should end with `Tests` (e.g., `UsersControllerTests`)
 5. **xUnit patterns**: Use `[Fact]` for tests, `[Theory]` for parameterized tests
 
-### Testing Patterns (xUnit - Future Implementation)
+### Testing Patterns (xUnit)
 ```csharp
 using Xunit;
 
@@ -213,7 +233,7 @@ dotnet run
 dotnet build
 ```
 
-### Testing (Future)
+### Testing
 ```bash
 # Run all tests
 dotnet test
@@ -258,7 +278,7 @@ dotnet test --collect:"XPlat Code Coverage"
 
 ### Intentional TODOs
 - **DELETE endpoint**: Left unimplemented for practice exercises
-- **Tests**: No test project yet - intentionally left for TDD practice
+- **Tests**: Existing-route baseline is prepared; focused DELETE tests remain the TDD exercise
 - **Database**: No persistence layer - simplified for learning purposes
 
 ### Practice Materials

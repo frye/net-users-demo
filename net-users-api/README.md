@@ -8,7 +8,7 @@ A simple RESTful API built with ASP.NET Core that provides user profile informat
 - Get a specific user profile by ID
 - Create new user profiles
 - Update existing user profiles
-- Delete user profiles
+- Delete user profiles (intentionally unfinished workshop exercise)
 
 ## API Endpoints
 
@@ -16,7 +16,7 @@ A simple RESTful API built with ASP.NET Core that provides user profile informat
 - GET `/api/v1/users/:id` - Get a specific user by ID
 - POST `/api/v1/users` - Create a new user
 - PUT `/api/v1/users/:id` - Update an existing user
-- DELETE `/api/v1/users/:id` - Delete a user
+- DELETE `/api/v1/users/:id` - TODO: implement in the workshop
 
 ## Data Model
 
@@ -29,7 +29,7 @@ Each user profile contains:
 
 ### Prerequisites
 
-- .NET 9.0 SDK or newer
+- The exact .NET 9 SDK in the solution's `global.json`
 
 ### Installation
 
@@ -68,10 +68,10 @@ curl -X POST http://localhost:8080/api/v1/users \
 ```bash
 curl -X PUT http://localhost:8080/api/v1/users/1 \
   -H "Content-Type: application/json" \
-  -d '{"fullName":"John Smith", "emoji":"😎"}'
+  -d '{"id":"1", "fullName":"John Smith", "emoji":"😎"}'
 ```
 
-### Delete a user
+### Delete a user (only after implementing the exercise)
 ```bash
 curl -X DELETE http://localhost:8080/api/v1/users/1
 ```
@@ -95,6 +95,14 @@ net-users-api/
 ## Development
 
 This project is designed for practicing GitHub Copilot features and Test-Driven Development. See the accompanying practice instruction files for guided exercises.
+
+For the current cross-client exercise, use the
+[Copilot Across Platforms guide](../docs/workshops/copilot-across-platforms/guide.md).
+Run `dotnet test net-users-api.tests/net-users-api.tests.csproj` from the solution
+root for existing-route coverage. Use `node scripts/workshop/validate.mjs local`
+or `complete` for feature evidence; baseline-only success is not DELETE completion.
+The shared HTTP request file uses the actual HTTP listener at port 8080. No HTTPS
+listener is configured by this demo.
 
 ## License
 

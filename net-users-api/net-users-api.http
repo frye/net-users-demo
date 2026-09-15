@@ -1,6 +1,31 @@
-@net_users_api_HostAddress = http://localhost:5135
+@net_users_api_HostAddress = http://localhost:8080
 
-GET {{net_users_api_HostAddress}}/weatherforecast/
+### HTML table
+GET {{net_users_api_HostAddress}}/
+
+### All users
+GET {{net_users_api_HostAddress}}/api/v1/users
 Accept: application/json
 
-###
+### Existing user
+GET {{net_users_api_HostAddress}}/api/v1/users/1
+Accept: application/json
+
+### Missing user: 404 with {"error":"User not found"}
+GET {{net_users_api_HostAddress}}/api/v1/users/missing
+
+### Create synthetic user (run once per application process)
+POST {{net_users_api_HostAddress}}/api/v1/users
+Content-Type: application/json
+
+{"id":"workshop-example","fullName":"Workshop Example","emoji":"sample"}
+
+### Update the synthetic user; the route ID wins
+PUT {{net_users_api_HostAddress}}/api/v1/users/workshop-example
+Content-Type: application/json
+
+{"id":"ignored","fullName":"Updated Example","emoji":"updated"}
+
+### DELETE is intentionally unfinished on the starter.
+# During the cloud follow-up add a DELETE, a repeated DELETE, and a GET
+# for workshop-example, with expected 204 / 404 / 404 results.

@@ -1,0 +1,67 @@
+name: Workshop Pages
+
+on:
+  pull_request:
+    paths:
+      - docs/workshops/copilot-across-platforms/**
+      - scripts/build-workshop-guide.mjs
+      - scripts/test-workshop-guide.mjs
+      - .github/workflows/workshop-pages.yml
+  push:
+    branches: [main]
+    paths:
+      - docs/workshops/copilot-across-platforms/**
+      - scripts/build-workshop-guide.mjs
+      - scripts/test-workshop-guide.mjs
+      - .github/workflows/workshop-pages.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: workshop-pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check generated content
+        run: |
+          node scripts/build-workshop-guide.mjs --check
+          node scripts/test-workshop-guide.mjs
+      - name: Stage only public site assets
+        run: |
+          mkdir -p _site
+          cp docs/workshops/copilot-across-platforms/index.html _site/
+          cp docs/workshops/copilot-across-platforms/*.css _site/
+          cp docs/workshops/copilot-across-platforms/*.js _site/
+          cp docs/workshops/copilot-across-platforms/*.md _site/
+      - name: Upload Pages root
+        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - name: Deploy approved default-branch site
+        id: deployment
+        uses: actions/deploy-pages@v4
